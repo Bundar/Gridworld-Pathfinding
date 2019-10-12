@@ -14,9 +14,13 @@ public class AStarUtil {
         CellHeap open = new CellHeap();
         CellHeap closed = new CellHeap();
 
+        //calc g, h, f for start
+        calcCosts(start);
+
         open.insert(start);
         while(true){
             Cells curr = open.deleteMin();
+
             closed.insert(curr);
 
             if(curr.equals(target)){
@@ -25,14 +29,23 @@ public class AStarUtil {
 
             gridWorld.getNeighborsOf(curr.getI(), curr.getJ()).forEach(c -> {
                 if(c.getState() != Cells.States.BLOCKED){
-                    if(c.fcost() < curr.fcost()){
-                        
+                    c.setPrev(curr);
+                    calcCosts(c);
+                    if(curr.getGCost() + 1 < c.getGCost()){
+
                     }
                 }
             });
 
         }
     }
+
+    private void calcCosts(Cells c) {
+        c.calcGCost();
+        c.calcHCost(target);
+        c.calcFCost();
+    }
+
     public void repeatedBackwardAStar(){
 
     }

@@ -1,30 +1,23 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class Cells implements Comparable {
-
-
     public enum States{
         UNKNOWN,
         BLOCKED,
         OPEN
     }
 
-    private boolean visited;
     private States state;
-    private Cells prev;
+    private Cells prev = this;
     private final int j;
     private final int i;
-    private int g, h, f;
+    private int g = 0, h = 0, f = 0;
     private Random random;
 
     Cells(int i, int j, States state) {
         this.i = i;
         this.j = j;
         this.state = state;
-        visited = false;
         random = new Random();
     }
 
@@ -49,7 +42,9 @@ public class Cells implements Comparable {
         return i;
     }
 
-    boolean isVisited(){ return visited; }
+    public void setPrev(Cells prev) {
+        this.prev = prev;
+    }
 
     @Override
     public int compareTo(Object o) {
@@ -60,9 +55,9 @@ public class Cells implements Comparable {
             System.out.println(e);
             return 0;
         }
-        if(this.fcost() == c.fcost()){
-            if(this.hcost() == c.hcost()){
-                if(this.gcost() == c.gcost()){
+        if(this.getFCost() == c.getFCost()){
+            if(this.getHCost() == c.getHCost()){
+                if(this.getGCost() == c.getGCost()){
                     int random_tie_break = random.nextInt(2);//random tie breaking
                     if(random_tie_break == 0)
                         return -1;
@@ -70,25 +65,35 @@ public class Cells implements Comparable {
                         return 1;
                 }
                 else
-                    return this.gcost() - c.gcost();
+                    return this.getGCost() - c.getGCost();
             }
             else
-                return this.hcost() - c.hcost();
+                return this.getHCost() - c.getHCost();
         }
         else
-            return this.fcost() - c.fcost();
+            return this.getFCost() - c.getFCost();
     }
 
-    public int gcost() {
+    int getGCost() {
         return g;
     }
 
-    public int hcost() {
+    int getHCost() {
         return h;
     }
 
-    public int fcost() {
+    int getFCost() {
         return f;
+    }
+
+    void calcFCost(){
+        f =  getGCost() + getHCost();
+    }
+    void calcGCost(){
+        g = prev.getGCost()+1;
+    }
+    void calcHCost(Cells target){
+        h =  Math.abs(this.getI() - target.getI()) + Math.abs(this.getJ() - target.getJ());
     }
 
     @Override
