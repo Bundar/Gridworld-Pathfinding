@@ -1,6 +1,10 @@
 import java.util.Random;
 
 public class Cells implements Comparable {
+    public void visit() {
+        visited = true;
+    }
+
     public enum States{
         UNKNOWN,
         BLOCKED,
@@ -11,6 +15,7 @@ public class Cells implements Comparable {
     private Cells prev = this;
     private final int j;
     private final int i;
+    private boolean visited;
     private int g = 0, h = 0, f = 0;
     private Random random;
 
@@ -18,6 +23,7 @@ public class Cells implements Comparable {
         this.i = i;
         this.j = j;
         this.state = state;
+        setVisited(false);
         random = new Random();
     }
 
@@ -74,6 +80,13 @@ public class Cells implements Comparable {
             return this.getFCost() - c.getFCost();
     }
 
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
     int getGCost() {
         return g;
     }

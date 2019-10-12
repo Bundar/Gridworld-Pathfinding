@@ -12,32 +12,32 @@ public class AStarUtil {
 
     public void repeatedForwardAStar(){
         CellHeap open = new CellHeap();
-        CellHeap closed = new CellHeap();
-
         //calc g, h, f for start
         calcCosts(start);
-
         open.insert(start);
-        while(true){
-            Cells curr = open.deleteMin();
-
-            closed.insert(curr);
-
+        while(!open.isEmpty()){
+            Cells curr = open.deleteMin();//remove from open list the lowest f value cell
             if(curr.equals(target)){
+                System.out.println("Path Found");
                 return;
             }
-
+            curr.visit();//add to closed list
             gridWorld.getNeighborsOf(curr.getI(), curr.getJ()).forEach(c -> {
-                if(c.getState() != Cells.States.BLOCKED){
-                    c.setPrev(curr);
-                    calcCosts(c);
-                    if(curr.getGCost() + 1 < c.getGCost()){
-
+                if(c.getState() != Cells.States.BLOCKED && !c.isVisited()){
+                    if(!open.contains(c)){
+                        open.insert(c);
+                        c.setPrev(curr);
+                        calcCosts(c);
+                    }else{
+                        if(curr.getGCost() + 1 < c.getGCost()){
+                            c.setPrev(curr);
+                            calcCosts(c);//may need to reorder heap after this...
+                        }
                     }
                 }
             });
-
         }
+        System.out.println("No Path...");
     }
 
     private void calcCosts(Cells c) {

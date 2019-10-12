@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class CellHeap{
 
     private int size;
@@ -63,5 +65,21 @@ public class CellHeap{
         Cells [] old = heap;
         heap = new Cells[heap.length * 2];
         System.arraycopy(old, 1, heap, 1, size);
+    }
+
+    public boolean contains(Cells c) {
+        if(c.compareTo(heap[1]) < 0){
+            return false;
+        }else{
+            return Arrays.stream(heap).anyMatch(hc -> c == hc);
+        }
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public boolean isEmpty() {
+        return size <= 0;
     }
 }
