@@ -1,7 +1,12 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class Cells implements Comparable {
-        public enum States{
+
+
+    public enum States{
         UNKNOWN,
         BLOCKED,
         OPEN
@@ -74,15 +79,15 @@ public class Cells implements Comparable {
             return this.fcost() - c.fcost();
     }
 
-    private int gcost() {
+    public int gcost() {
         return g;
     }
 
-    private int hcost() {
+    public int hcost() {
         return h;
     }
 
-    private int fcost() {
+    public int fcost() {
         return f;
     }
 

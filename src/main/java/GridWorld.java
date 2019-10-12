@@ -48,11 +48,7 @@ public class GridWorld {
             Cells cell = cellStack.pop();
             int i = cell.getI();
             int j = cell.getJ();
-            List<Cells> cells = new ArrayList<Cells>(Arrays.asList(
-                    getCell(i - 1, j),
-                    getCell(i + 1, j),
-                    getCell(i, j - 1),
-                    getCell(i, j + 1)));
+            List<Cells> cells = getNeighborsOf(i, j);
 
             while(!cells.isEmpty()){
                 int randomIndex = random.nextInt(cells.size());
@@ -66,6 +62,14 @@ public class GridWorld {
                 cells.remove(randomIndex);
             }
         }
+    }
+
+    public List<Cells> getNeighborsOf(int i, int j) {
+        return new ArrayList<Cells>(Arrays.asList(
+                getCell(i - 1, j),
+                getCell(i + 1, j),
+                getCell(i, j - 1),
+                getCell(i, j + 1)));
     }
 
     private Cells getCell(int i, int j) {
