@@ -72,7 +72,7 @@ public class GridWorld {
                 getCell(i, j + 1)));
     }
 
-    private Cells getCell(int i, int j) {
+    public Cells getCell(int i, int j) {
         if(0 <= i && i < dimensions && 0 <= j && j < dimensions) {
             return gridWorld[i][j];
         }
@@ -93,6 +93,10 @@ public class GridWorld {
             title += "\n";
         }
         return title;
+    }
+
+    public void setCell(int i, int j, Cells.States state) {
+        gridWorld[i][j].setState(state);
     }
 }
 

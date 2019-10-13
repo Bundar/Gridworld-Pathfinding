@@ -5,6 +5,14 @@ public class Cells implements Comparable {
         visited = true;
     }
 
+    public void setState(States state) {
+        this.state = state;
+    }
+
+    public Cells getPrev() {
+        return prev;
+    }
+
     public enum States{
         UNKNOWN,
         BLOCKED,
@@ -16,7 +24,7 @@ public class Cells implements Comparable {
     private final int j;
     private final int i;
     private boolean visited;
-    private int g = 0, h = 0, f = 0;
+    private int g = Integer.MAX_VALUE, h = 0, f = 0;
     private Random random;
 
     Cells(int i, int j, States state) {
@@ -113,7 +121,7 @@ public class Cells implements Comparable {
     public String toString() {
         return "Cells{" +
                 "state=" + state +
-                ", prevCell=" + prev +
+                ", prevCell=" + prev.hashCode() +
                 ", i=" + i +
                 ", j=" + j +
                 ", cost=" + f +

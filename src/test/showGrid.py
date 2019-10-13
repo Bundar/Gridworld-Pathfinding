@@ -9,6 +9,7 @@ if __name__ == "__main__":
         exit()
     
     filename = sys.argv[1]
+    filenamePath = sys.argv[2]
     print(filename)
 
     # Read data
@@ -17,6 +18,19 @@ if __name__ == "__main__":
     for line in range(2, len(lines)):
         grid.append(list(map(float, lines[line].split(' '))))
 
+
+    # read path form file
+    pathlines = [line.rstrip('\n') for line in open(filenamePath)]
+    pathpoints = []
+    for line in range(2, len(pathlines)):
+        pathpoints.append(list(map(float, pathlines[line].split(' '))))
+
+    startCell = list(map(float, pathlines[0].split(' ')))
+    endCell = list(map(float, pathlines[1].split(' ')))
+
+    print('StartCell: ', startCell)
+    print('endCell: ', endCell)
+    print('Path: ', pathpoints)
     rows = int(lines[0])
     cols = int(lines[1])
 # Define some colors
@@ -63,6 +77,8 @@ while not done:
             color = WHITE
             if grid[row][column] == 1:
                 color = BLACK
+            if [row, column] in pathpoints:
+            	color = GREEN
             pygame.draw.rect(screen,
                              color,
                              [(MARGIN + WIDTH) * column + MARGIN,
