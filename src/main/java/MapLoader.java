@@ -3,6 +3,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 public class MapLoader {
@@ -21,16 +22,22 @@ public class MapLoader {
     }
     public void saveGridWorldsToFile(ArrayList<GridWorld> gridWorlds) throws IOException {
         Gson gson = new Gson();
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("").append(gridWorlds.size()).append("\n");
-
+        FileOutputStream outputStream = new FileOutputStream(gridWorldsPath);
+        AtomicInteger i = new AtomicInteger();
         gridWorlds.forEach(gw -> {
+            System.out.println("writing out gw # " + i);
+            i.getAndIncrement();
+            StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(serializeGridWorld(gw, gson)).append("\n");
+            byte[] bytes = stringBuilder.toString().getBytes();
+            try {
+                outputStream.write(bytes);
+                outputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
-        FileOutputStream outputStream = new FileOutputStream(gridWorldsPath);
-        byte[] bytes = stringBuilder.toString().getBytes();
-        outputStream.write(bytes);
         outputStream.close();
     }
 
