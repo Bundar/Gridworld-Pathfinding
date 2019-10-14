@@ -1,22 +1,20 @@
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Random;
 
 class CellsTest {
-
-
+    private Random rand = new Random();
     @Test
     void shouldTestAGreaterThanBWithDiffFCost(){
-        Cells a = new Cells(0,0, Cells.States.OPEN);
+        Cells a = new Cells(0,0, Cells.States.OPEN, rand);
 
-        Cells b = new Cells(0,0, Cells.States.OPEN);
+        Cells b = new Cells(0,0, Cells.States.OPEN, rand);
 
         a.calcGCost();
-        a.calcHCost(new Cells(1,1, Cells.States.OPEN));
+        a.calcHCost(new Cells(1,1, Cells.States.OPEN, rand));
         a.calcFCost();
 
         b.calcGCost();
-        b.calcHCost(new Cells(1,0, Cells.States.OPEN));
+        b.calcHCost(new Cells(1,0, Cells.States.OPEN, rand));
         b.calcFCost();
 
         if(a.compareTo(b) > 0)
@@ -29,16 +27,16 @@ class CellsTest {
     }
     @Test
     void shouldTestRandomTieBreak(){
-        Cells a = new Cells(0,0, Cells.States.OPEN);
+        Cells a = new Cells(0,0, Cells.States.OPEN, rand);
 
-        Cells b = new Cells(0,0, Cells.States.OPEN);
+        Cells b = new Cells(0,0, Cells.States.OPEN, rand);
 
         a.calcGCost();
-        a.calcHCost(new Cells(1,1, Cells.States.OPEN));
+        a.calcHCost(new Cells(1,1, Cells.States.OPEN, rand));
         a.calcFCost();
 
         b.calcGCost();
-        b.calcHCost(new Cells(1,1, Cells.States.OPEN));
+        b.calcHCost(new Cells(1,1, Cells.States.OPEN, rand));
         b.calcFCost();
 
         int bool = a.compareTo(b);
@@ -54,16 +52,16 @@ class CellsTest {
 
     @Test
     void shouldTestAGreaterThanBWithSameFCost(){
-        Cells a = new Cells(0,0, Cells.States.OPEN);
+        Cells a = new Cells(0,0, Cells.States.OPEN, rand);
 
-        Cells b = new Cells(0,0, Cells.States.OPEN);
+        Cells b = new Cells(0,0, Cells.States.OPEN, rand);
 
         a.calcGCost();
-        a.calcHCost(new Cells(1,1, Cells.States.OPEN));
+        a.calcHCost(new Cells(1,1, Cells.States.OPEN, rand));
         a.calcFCost();
 
         b.calcGCost();
-        b.calcHCost(new Cells(1,1, Cells.States.OPEN));
+        b.calcHCost(new Cells(1,1, Cells.States.OPEN, rand));
         b.calcFCost();
 
         int bool = a.compareTo(b);

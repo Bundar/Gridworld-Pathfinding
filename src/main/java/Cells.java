@@ -1,17 +1,14 @@
+import java.util.Objects;
 import java.util.Random;
 
 public class Cells implements Comparable {
-    public void visit() {
-        visited = true;
-    }
-
-    public void setState(States state) {
-        this.state = state;
-    }
-
-    public Cells getPrev() {
-        return prev;
-    }
+    private States state;
+    private Cells prev = null;
+    private final int j;
+    private final int i;
+    private boolean visited;
+    private int g = -1, h = 0, f = 0;
+    private transient Random random;
 
     public enum States{
         UNKNOWN,
@@ -19,20 +16,12 @@ public class Cells implements Comparable {
         OPEN
     }
 
-    private States state;
-    private Cells prev = this;
-    private final int j;
-    private final int i;
-    private boolean visited;
-    private int g = -1, h = 0, f = 0;
-    private Random random;
-
-    Cells(int i, int j, States state) {
+    Cells(int i, int j, States state, Random random) {
         this.i = i;
         this.j = j;
         this.state = state;
         setVisited(false);
-        random = new Random();
+        this.random = random;
     }
 
     void explore() {
@@ -43,21 +32,82 @@ public class Cells implements Comparable {
             state = States.BLOCKED;
         }
     }
-
+    // Getters
     States getState() {
         return state;
     }
-
     int getJ() {
         return j;
     }
-
     int getI() {
         return i;
     }
+    boolean isVisited() {
+        return visited;
+    }
+    void visit() {
+        visited = true;
+    }
+    Cells getPrev() {
+        return prev;
+    }
+    int getGCost() {
+        return g;
+    }
+    private int getHCost() {
+        return h;
+    }
+    private int getFCost() {
+        return f;
+    }
 
-    public void setPrev(Cells prev) {
+    //Setters
+    void resetFGH(){
+        g = -1;
+        h = 0;
+        f = 0;
+    }
+    void setStateOpen() {
+        this.state = States.OPEN;
+    }
+    void setPrev(Cells prev) {
         this.prev = prev;
+    }
+    void setVisited(boolean v) {
+        this.visited = v;
+    }
+    void calcFCost(){
+        f =  getGCost() + getHCost();
+    }
+    void calcGCost(){
+        if(prev == null)
+            g = 1;
+        else
+            g = prev.getGCost()+1;
+    }
+    void calcHCost(Cells target){
+        h =  Math.abs(this.getI() - target.getI()) + Math.abs(this.getJ() - target.getJ());
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Cells)) return false;
+        Cells cells = (Cells) o;
+        return getJ() == cells.getJ() &&
+                getI() == cells.getI() &&
+                isVisited() == cells.isVisited() &&
+                g == cells.g &&
+                h == cells.h &&
+                f == cells.f &&
+                getState() == cells.getState() &&
+                (getPrev() == null && cells.getPrev() == null) || (getPrev() != null && cells.getPrev() != null && getPrev().equals(cells.getPrev()));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getState(), getPrev(), getJ(), getI(), isVisited(), g, h, f);
     }
 
     @Override
@@ -66,14 +116,13 @@ public class Cells implements Comparable {
         try {
             c = (Cells) o;
         }catch(Exception e){
-            System.out.println(e);
+            e.printStackTrace();
             return 0;
         }
         if(this.getFCost() == c.getFCost()){
             if(this.getHCost() == c.getHCost()){
                 if(this.getGCost() == c.getGCost()){
-                    int random_tie_break = random.nextInt(2);//random tie breaking
-                    System.out.println("rando tie breakerr: " + random_tie_break);
+                    int random_tie_break = random.nextInt(2);
                     if(random_tie_break == 0)
                         return -1;
                     else
@@ -89,40 +138,11 @@ public class Cells implements Comparable {
             return this.getFCost() - c.getFCost();
     }
 
-    public boolean isVisited() {
-        return visited;
-    }
-
-    public void setVisited(boolean visited) {
-        this.visited = visited;
-    }
-    int getGCost() {
-        return g;
-    }
-
-    int getHCost() {
-        return h;
-    }
-
-    int getFCost() {
-        return f;
-    }
-
-    void calcFCost(){
-        f =  getGCost() + getHCost();
-    }
-    void calcGCost(){
-        g = prev.getGCost()+1;
-    }
-    void calcHCost(Cells target){
-        h =  Math.abs(this.getI() - target.getI()) + Math.abs(this.getJ() - target.getJ());
-    }
-
     @Override
     public String toString() {
         return "Cells{" +
                 "state=" + state +
-                ", prevCell= (" + prev.getI() + ", " + prev.getJ() + ")" +
+                ", prevCell= (" + (prev != null ? ""+prev.getI() + ", " + prev.getJ() : "X, X") + ")" +
                 ", i=" + i +
                 ", j=" + j +
                 ", cost=" + f +

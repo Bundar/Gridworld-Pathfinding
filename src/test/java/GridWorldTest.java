@@ -11,7 +11,7 @@ class GridWorldTest {
 
     @BeforeEach
     void init(){
-        gridWorld = new GridWorld(101);
+        gridWorld = new GridWorld(101, new Random());
     }
 
     @Test
@@ -48,7 +48,7 @@ class GridWorldTest {
         IntStream.range(1,51).forEach(i ->{
             GridWorld gridWorldi = null;
             try {
-                gridWorldi = new GridWorld(101);
+                gridWorldi = new GridWorld(101, new Random());
                 gridWorldi.generateGridMap();
             } catch (Exception e) {
                 e.printStackTrace();

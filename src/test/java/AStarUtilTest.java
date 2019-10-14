@@ -1,11 +1,9 @@
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileWriter;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Random;
 
 class AStarUtilTest {
     GridWorld gridWorld;
@@ -15,14 +13,14 @@ class AStarUtilTest {
 
     @BeforeEach
     void init() {
-        gridWorld = new GridWorld(dim);
+        gridWorld = new GridWorld(dim, new Random());
         try {
             gridWorld.generateGridMap();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        gridWorld.setCell(0,0, Cells.States.OPEN);
-        gridWorld.setCell(dim -1 ,dim - 1, Cells.States.OPEN);
+        gridWorld.setCellOpen(0,0);
+        gridWorld.setCellOpen(dim -1 ,dim - 1);
         aStarUtil = new AStarUtil(gridWorld, gridWorld.getCell(0,0), gridWorld.getCell(dim -1,dim -1));
     }
 
@@ -128,8 +126,10 @@ class AStarUtilTest {
             System.out.println(e);
         }
         System.out.println("Success...(Fpath)");
+        System.out.println(aStarUtil.getTarget().getGCost());
 
         String b_path = "";
+        gridWorld.reset();
         if(aStarUtil.repeatedBackwardAStar()) {
             b_path = aStarUtil.storeableCellPath(gridWorld.getCell(dim -1, dim -1), gridWorld.getCell(0, 0));
         }else{
@@ -151,5 +151,6 @@ class AStarUtilTest {
             System.out.println(e);
         }
         System.out.println("Success...(Bpath)");
+        System.out.println(aStarUtil.getStart().getGCost());
     }
 }

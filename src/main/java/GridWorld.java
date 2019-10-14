@@ -1,41 +1,53 @@
+import java.beans.Transient;
 import java.util.*;
+import static java.util.Arrays.deepEquals;
 
 public class GridWorld {
     private int dimensions;
-    private Cells[][] gridWorld;
-    private Random random;
+    private ArrayList<ArrayList<Cells>> gridWorld;
+    private transient Random random;
 
-    GridWorld(int dim){
+    GridWorld(int dim, Random random){
         dimensions = dim;
-        random = new Random();
-        gridWorld = new Cells[dimensions][dimensions];
+        this.random = random;
+        gridWorld = new ArrayList<ArrayList<Cells>>(dimensions);
         initializeGridWorld();
     }
 
-    private void initializeGridWorld(){
+    void initializeGridWorld(){
         for( int i = 0 ; i < dimensions ; i ++){
+            gridWorld.add(new ArrayList<Cells>(dimensions));
             for ( int j = 0 ; j < dimensions ; j ++){
-                gridWorld[i][j] = new Cells(i, j, Cells.States.UNKNOWN);
+                gridWorld.get(i).add(new Cells(i, j, Cells.States.UNKNOWN, random));
             }
         }
     }
 
-    void generateGridMap() throws Exception {
+    void generateGridMap() {
         int i, j;
         Random random = new Random();
         i = random.nextInt(dimensions);
         j = random.nextInt(dimensions);
-//        System.out.println("(i,j) = ("+i+", "+j+")");
-        depthFirstCartographer(gridWorld[i][j]);
+        depthFirstCartographer(gridWorld.get(i).get(j));
+    }
+
+
+    public void reset() {
+        gridWorld.forEach(cellArr -> {
+            cellArr.forEach(c -> {
+                c.setVisited(false);
+                c.setPrev(null);
+                c.resetFGH();
+            });
+        });
     }
 
     private void depthFirstCartographer(Cells rootCell){
-//        System.out.println("Starting from ("+rootCell.getI()+", "+rootCell.getJ()+")");
         dfsUtil(rootCell);
         for( int i = 0 ; i < dimensions ; i ++){
             for ( int j = 0 ; j < dimensions ; j ++){
-                if(gridWorld[i][j].getState() == Cells.States.UNKNOWN){
-                    dfsUtil(gridWorld[i][j]);
+                if(gridWorld.get(i).get(j).getState() == Cells.States.UNKNOWN){
+                    dfsUtil(gridWorld.get(i).get(j));
                 }
             }
         }
@@ -44,13 +56,11 @@ public class GridWorld {
     private void dfsUtil(Cells rootCell) {
         Stack<Cells> cellStack = new Stack<>();
         cellStack.push(rootCell);
-
         while(!cellStack.empty()){
             Cells cell = cellStack.pop();
             int i = cell.getI();
             int j = cell.getJ();
             List<Cells> cells = getNeighborsOf(i, j);
-
             while(!cells.isEmpty()){
                 int randomIndex = random.nextInt(cells.size());
                 Cells c = cells.get(randomIndex);
@@ -65,39 +75,48 @@ public class GridWorld {
         }
     }
 
-    public List<Cells> getNeighborsOf(int i, int j) {
-        return new ArrayList<Cells>(Arrays.asList(
+    List<Cells> getNeighborsOf(int i, int j) {
+        return new ArrayList<>(Arrays.asList(
                 getCell(i - 1, j),
                 getCell(i + 1, j),
                 getCell(i, j - 1),
                 getCell(i, j + 1)));
     }
 
-    public Cells getCell(int i, int j) {
+    Cells getCell(int i, int j) {
         if(0 <= i && i < dimensions && 0 <= j && j < dimensions) {
-            return gridWorld[i][j];
+            return gridWorld.get(i).get(j);
         }
         else
-            return new Cells(i, j, Cells.States.BLOCKED);
+            return new Cells(i, j, Cells.States.BLOCKED, random);
+    }
+
+    void setCellOpen(int i, int j) {
+        gridWorld.get(i).get(j).setStateOpen();
     }
 
     @Override
     public String toString() {
-        String title = ""+dimensions+"\n" + dimensions + "\n";
-        for ( Cells[] cellRow: gridWorld ) {
-            for ( int i = 0 ; i < cellRow.length ; i++ ) {
-                Cells.States state = cellRow[i].getState();
-                title += (state == Cells.States.OPEN || state == Cells.States.UNKNOWN) ? "0" : "1";
-                if(i != cellRow.length-1)
-                    title+=" ";
+        StringBuilder title = new StringBuilder("" + dimensions + "\n" + dimensions + "\n");
+        for ( ArrayList<Cells> cellRow: gridWorld ) {
+            for ( int i = 0 ; i < cellRow.size() ; i++ ) {
+                Cells.States state = cellRow.get(i).getState();
+                title.append((state == Cells.States.OPEN || state == Cells.States.UNKNOWN) ? "0" : "1");
+                if(i != cellRow.size()-1)
+                    title.append(" ");
             }
-            title += "\n";
+            title.append("\n");
         }
-        return title;
+        return title.toString();
     }
 
-    public void setCell(int i, int j, Cells.States state) {
-        gridWorld[i][j].setState(state);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GridWorld)) return false;
+        GridWorld gridWorld1 = (GridWorld) o;
+        return dimensions == gridWorld1.dimensions &&
+                gridWorld.equals(gridWorld1.gridWorld);
     }
 }
 

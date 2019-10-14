@@ -4,8 +4,10 @@ import java.util.List;
 public class AStarUtil {
 
     private GridWorld gridWorld;
-    private final Cells start;
-    private final Cells target;
+    private Cells start;
+    private Cells target;
+
+    AStarUtil(){}
 
     AStarUtil(GridWorld gridWorld, Cells startCell, Cells target){
         this.gridWorld = gridWorld;
@@ -15,45 +17,38 @@ public class AStarUtil {
 
     boolean repeatedForwardAStar(){
         CellHeap open = new CellHeap();
-        //calc g, h, f for start
         calcCosts(start, target);
         open.insert(start);
-        while(!open.isEmpty()){
-            Cells curr = open.deleteMin();//remove from open list the lowest f value cell
-            System.out.println("Now processing cell: " + curr);
+        while(open.notEmpty()){
+            Cells curr = open.deleteMin();
             if(curr.equals(target)){
-                System.out.println("Path Found:\nTotal Cost: " + curr.getGCost());
+//                System.out.println(curr.getGCost());
                 return true;
             }
-            curr.visit();//add to closed list
+            curr.visit();
             gridWorld.getNeighborsOf(curr.getI(), curr.getJ()).forEach(c -> {
                 if(c.getState() != Cells.States.BLOCKED && !c.isVisited()){
-                    if(!open.contains(c)){
+                    if(open.isNotContained(c)){
                         c.setPrev(curr);
                         calcCosts(c, target);
-                        System.out.println("Inserting Cell Neighbor c = " + c + " of cell curr = " + curr);
                         open.insert(c);
-                        System.out.println("1. The costs of c are (f, g, h): " + c.getFCost() + ", " + c.getGCost() + ", " + c.getHCost());
                     }else{
                         if(curr.getGCost() + 1 < c.getGCost()){
                             c.setPrev(curr);
-                            calcCosts(c, target);//may need to reorder heap after this...
-                            System.out.println("2. The costs of c are (f, g, h): " + c.getFCost() + ", " + c.getGCost() + ", " + c.getHCost());
+                            calcCosts(c, target);
                             open.buildHeap();
                         }
                     }
                 }
             });
         }
-        System.out.println("No Path...");
         return false;
     }
 
-    private void calcCosts(Cells c, Cells searchtarget) {
+    private void calcCosts(Cells c, Cells target) {
         c.calcGCost();
-        c.calcHCost(searchtarget);
+        c.calcHCost(target);
         c.calcFCost();
-        System.out.println("calcCost: ("+c.getI() +", "+c.getJ()+") : f, g, h = "+ c.getFCost() + ", "+c.getGCost()+", "+c.getHCost());
     }
 
 
@@ -62,18 +57,18 @@ public class AStarUtil {
         //calc g, h, f for start
         calcCosts(target,start);
         open.insert(target);
-        while(!open.isEmpty()){
+        while(open.notEmpty()){
             Cells curr = open.deleteMin();
             if(curr.equals(start)){
-                System.out.println("Backwards Path Found:\nTotal Cost: " + curr.getGCost());
+//                System.out.println(curr.getGCost());
                 return true;
             }
             curr.visit();
             gridWorld.getNeighborsOf(curr.getI(), curr.getJ()).forEach(c -> {
                 if(c.getState() != Cells.States.BLOCKED && !c.isVisited()){
-                    if(!open.contains(c)){
+                    if(open.isNotContained(c)){
                         c.setPrev(curr);
-                        calcCosts(c, start);//might need to chage to fix the calc cost thing
+                        calcCosts(c, start);
                         open.insert(c);
                     }else{
                         if(curr.getGCost() + 1 < c.getGCost()){
@@ -85,12 +80,26 @@ public class AStarUtil {
                 }
             });
         }
-        System.out.println("No Path...");
         return false;
     }
 
     public void adaptiveAStar(){
 
+    }
+    public void setGridWorld(GridWorld g){
+        this.gridWorld = g;
+    }
+    public void setTarget(Cells target) {
+        this.target = target;
+    }
+    public void setStart(Cells start) {
+        this.start = start;
+    }
+    public Cells getTarget() {
+        return target;
+    }
+    public Cells getStart() {
+        return start;
     }
 
     List<Cells> getTreePath(Cells startCell, Cells endCell){
@@ -108,18 +117,18 @@ public class AStarUtil {
     }
 
     String storeableCellPath(Cells startCell, Cells endCell){
-        String fileOut = "" + startCell.getI() + " " + startCell.getJ() + "\n" +
-                endCell.getI() + " " + endCell.getJ() + "\n";
+        StringBuilder fileOut = new StringBuilder("" + startCell.getI() + " " + startCell.getJ() + "\n" +
+                endCell.getI() + " " + endCell.getJ() + "\n");
 
         List<Cells> cellsPath = getTreePath(startCell, endCell);
 
         for(int i = 0 ; i < cellsPath.size() ; i++){
             Cells c = cellsPath.get(i);
-            fileOut += c.getI() + " " + c.getJ();
+            fileOut.append(c.getI()).append(" ").append(c.getJ());
             if(i != cellsPath.size()-1){
-                fileOut+= "\n";
+                fileOut.append("\n");
             }
         }
-        return fileOut;
+        return fileOut.toString();
     }
 }

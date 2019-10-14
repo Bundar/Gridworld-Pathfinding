@@ -1,16 +1,16 @@
 import java.util.Arrays;
 
-public class CellHeap{
+class CellHeap{
 
     private int size;
     private Cells[] heap;
 
-    public CellHeap(){
+    CellHeap(){
         size = 0;
         heap = new Cells[2];
     }
 
-    public void buildHeap()
+    void buildHeap()
     {
         for (int k = size/2; k > 0; k--)
         {
@@ -37,7 +37,7 @@ public class CellHeap{
         heap[k] = tmp;
     }
 
-    public Cells deleteMin() throws RuntimeException
+    Cells deleteMin() throws RuntimeException
     {
         if (size == 0) throw new RuntimeException();
         Cells min = heap[1];
@@ -46,7 +46,7 @@ public class CellHeap{
         return min;
     }
 
-    public void insert(Cells x)
+    void insert(Cells x)
     {
         if(size == heap.length - 1) doubleSize();
 
@@ -67,19 +67,15 @@ public class CellHeap{
         System.arraycopy(old, 1, heap, 1, size);
     }
 
-    public boolean contains(Cells c) {
+    boolean isNotContained(Cells c) {
         if(c.compareTo(heap[1]) < 0){
-            return false;
+            return true;
         }else{
-            return Arrays.stream(heap).anyMatch(hc -> c == hc);
+            return Arrays.stream(heap).noneMatch(hc -> c == hc);
         }
     }
 
-    public int size() {
-        return size;
-    }
-
-    public boolean isEmpty() {
-        return size <= 0;
+    boolean notEmpty() {
+        return size > 0;
     }
 }
