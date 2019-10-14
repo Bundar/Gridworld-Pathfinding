@@ -20,6 +20,7 @@ public class AStarUtil {
         open.insert(start);
         while(!open.isEmpty()){
             Cells curr = open.deleteMin();//remove from open list the lowest f value cell
+            System.out.println("Now processing cell: " + curr);
             if(curr.equals(target)){
                 System.out.println("Path Found:\nTotal Cost: " + curr.getGCost());
                 return true;
@@ -28,13 +29,16 @@ public class AStarUtil {
             gridWorld.getNeighborsOf(curr.getI(), curr.getJ()).forEach(c -> {
                 if(c.getState() != Cells.States.BLOCKED && !c.isVisited()){
                     if(!open.contains(c)){
-                        open.insert(c);
                         c.setPrev(curr);
                         calcCosts(c, target);
+                        System.out.println("Inserting Cell Neighbor c = " + c + " of cell curr = " + curr);
+                        open.insert(c);
+                        System.out.println("1. The costs of c are (f, g, h): " + c.getFCost() + ", " + c.getGCost() + ", " + c.getHCost());
                     }else{
                         if(curr.getGCost() + 1 < c.getGCost()){
                             c.setPrev(curr);
                             calcCosts(c, target);//may need to reorder heap after this...
+                            System.out.println("2. The costs of c are (f, g, h): " + c.getFCost() + ", " + c.getGCost() + ", " + c.getHCost());
                             open.buildHeap();
                         }
                     }
@@ -49,7 +53,7 @@ public class AStarUtil {
         c.calcGCost();
         c.calcHCost(searchtarget);
         c.calcFCost();
-        System.out.println("("+c.getI() +", "+c.getJ()+") : f, g, h = "+ c.getFCost() + ", "+c.getGCost()+", "+c.getHCost());
+        System.out.println("calcCost: ("+c.getI() +", "+c.getJ()+") : f, g, h = "+ c.getFCost() + ", "+c.getGCost()+", "+c.getHCost());
     }
 
 
@@ -68,9 +72,9 @@ public class AStarUtil {
             gridWorld.getNeighborsOf(curr.getI(), curr.getJ()).forEach(c -> {
                 if(c.getState() != Cells.States.BLOCKED && !c.isVisited()){
                     if(!open.contains(c)){
-                        open.insert(c);
                         c.setPrev(curr);
                         calcCosts(c, start);//might need to chage to fix the calc cost thing
+                        open.insert(c);
                     }else{
                         if(curr.getGCost() + 1 < c.getGCost()){
                             c.setPrev(curr);

@@ -4,6 +4,7 @@ public class GridWorld {
     private int dimensions;
     private Cells[][] gridWorld;
     private Random random;
+
     GridWorld(int dim){
         dimensions = dim;
         random = new Random();

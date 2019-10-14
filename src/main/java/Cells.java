@@ -122,7 +122,7 @@ public class Cells implements Comparable {
     public String toString() {
         return "Cells{" +
                 "state=" + state +
-                ", prevCell=" + prev.hashCode() +
+                ", prevCell= (" + prev.getI() + ", " + prev.getJ() + ")" +
                 ", i=" + i +
                 ", j=" + j +
                 ", cost=" + f +

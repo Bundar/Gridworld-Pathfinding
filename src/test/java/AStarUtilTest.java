@@ -10,24 +10,27 @@ import static org.junit.jupiter.api.Assertions.*;
 class AStarUtilTest {
     GridWorld gridWorld;
     AStarUtil aStarUtil;
+
+    private int dim = 101;
+
     @BeforeEach
     void init() {
-        gridWorld = new GridWorld(5);
+        gridWorld = new GridWorld(dim);
         try {
-//            gridWorld.generateGridMap();
+            gridWorld.generateGridMap();
         } catch (Exception e) {
             e.printStackTrace();
         }
         gridWorld.setCell(0,0, Cells.States.OPEN);
-        gridWorld.setCell(4,4, Cells.States.OPEN);
-        aStarUtil = new AStarUtil(gridWorld, gridWorld.getCell(0,0), gridWorld.getCell(4,4));
+        gridWorld.setCell(dim -1 ,dim - 1, Cells.States.OPEN);
+        aStarUtil = new AStarUtil(gridWorld, gridWorld.getCell(0,0), gridWorld.getCell(dim -1,dim -1));
     }
 
     @Test
     void shouldRunAStarForward(){
         System.out.println(gridWorld);
         if(aStarUtil.repeatedForwardAStar()) {
-            List<Cells> path = aStarUtil.getTreePath(gridWorld.getCell(0, 0), gridWorld.getCell(9, 9));
+            List<Cells> path = aStarUtil.getTreePath(gridWorld.getCell(0, 0), gridWorld.getCell(dim -1, dim -1));
             path.forEach(System.out::println);
         }
     }
@@ -35,7 +38,7 @@ class AStarUtilTest {
     void shouldRunAStarBackward(){
         System.out.println(gridWorld);
         if(aStarUtil.repeatedBackwardAStar()) {
-            List<Cells> path = aStarUtil.getTreePath(gridWorld.getCell(9, 9), gridWorld.getCell(0, 0));
+            List<Cells> path = aStarUtil.getTreePath(gridWorld.getCell(dim -1, dim -1), gridWorld.getCell(0, 0));
             path.forEach(System.out::println);
         }
     }
@@ -44,7 +47,7 @@ class AStarUtilTest {
     void shouldPrintOutThePathAsIfItWasAFfile(){
         System.out.println(gridWorld);
         if(aStarUtil.repeatedForwardAStar()) {
-            System.out.println(aStarUtil.storeableCellPath(gridWorld.getCell(0, 0), gridWorld.getCell(9, 9)));
+            System.out.println(aStarUtil.storeableCellPath(gridWorld.getCell(0, 0), gridWorld.getCell(dim -1, dim -1)));
         }
     }
 
@@ -53,7 +56,7 @@ class AStarUtilTest {
         System.out.println(gridWorld);
         String path = "";
         if(aStarUtil.repeatedForwardAStar()) {
-            path = aStarUtil.storeableCellPath(gridWorld.getCell(0, 0), gridWorld.getCell(4, 4));
+            path = aStarUtil.storeableCellPath(gridWorld.getCell(0, 0), gridWorld.getCell(dim -1, dim -1));
         }else{
             System.out.println("failed");
             return;
@@ -79,7 +82,7 @@ class AStarUtilTest {
         System.out.println(gridWorld);
         String path = "";
         if(aStarUtil.repeatedBackwardAStar()) {
-            path = aStarUtil.storeableCellPath(gridWorld.getCell(100, 100), gridWorld.getCell(0, 0));
+            path = aStarUtil.storeableCellPath(gridWorld.getCell(dim -1, dim -1), gridWorld.getCell(0, 0));
         }else{
             System.out.println("failed");
             return;
@@ -105,7 +108,7 @@ class AStarUtilTest {
     void shouldCompareFandBAStar(){
         String f_path = "";
         if(aStarUtil.repeatedForwardAStar()) {
-            f_path = aStarUtil.storeableCellPath(gridWorld.getCell(0, 0), gridWorld.getCell(100, 100));
+            f_path = aStarUtil.storeableCellPath(gridWorld.getCell(0, 0), gridWorld.getCell(dim -1, dim -1));
         }else{
             System.out.println("failed to find path with forward");
             return;
@@ -128,7 +131,7 @@ class AStarUtilTest {
 
         String b_path = "";
         if(aStarUtil.repeatedBackwardAStar()) {
-            b_path = aStarUtil.storeableCellPath(gridWorld.getCell(100, 100), gridWorld.getCell(0, 0));
+            b_path = aStarUtil.storeableCellPath(gridWorld.getCell(dim -1, dim -1), gridWorld.getCell(0, 0));
         }else{
             System.out.println("failed to find back path");
             return;
