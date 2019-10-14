@@ -10,7 +10,7 @@ public class CellHeap{
         heap = new Cells[2];
     }
 
-    private void buildHeap()
+    public void buildHeap()
     {
         for (int k = size/2; k > 0; k--)
         {

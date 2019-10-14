@@ -24,7 +24,7 @@ public class Cells implements Comparable {
     private final int j;
     private final int i;
     private boolean visited;
-    private int g = Integer.MAX_VALUE, h = 0, f = 0;
+    private int g = -1, h = 0, f = 0;
     private Random random;
 
     Cells(int i, int j, States state) {
@@ -73,6 +73,7 @@ public class Cells implements Comparable {
             if(this.getHCost() == c.getHCost()){
                 if(this.getGCost() == c.getGCost()){
                     int random_tie_break = random.nextInt(2);//random tie breaking
+                    System.out.println("rando tie breakerr: " + random_tie_break);
                     if(random_tie_break == 0)
                         return -1;
                     else

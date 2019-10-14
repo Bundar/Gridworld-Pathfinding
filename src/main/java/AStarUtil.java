@@ -21,7 +21,7 @@ public class AStarUtil {
         while(!open.isEmpty()){
             Cells curr = open.deleteMin();//remove from open list the lowest f value cell
             if(curr.equals(target)){
-                System.out.println("Path Found");
+                System.out.println("Path Found:\nTotal Cost: " + curr.getGCost());
                 return true;
             }
             curr.visit();//add to closed list
@@ -35,6 +35,7 @@ public class AStarUtil {
                         if(curr.getGCost() + 1 < c.getGCost()){
                             c.setPrev(curr);
                             calcCosts(c, target);//may need to reorder heap after this...
+                            open.buildHeap();
                         }
                     }
                 }
@@ -48,6 +49,7 @@ public class AStarUtil {
         c.calcGCost();
         c.calcHCost(searchtarget);
         c.calcFCost();
+        System.out.println("("+c.getI() +", "+c.getJ()+") : f, g, h = "+ c.getFCost() + ", "+c.getGCost()+", "+c.getHCost());
     }
 
 
@@ -59,7 +61,7 @@ public class AStarUtil {
         while(!open.isEmpty()){
             Cells curr = open.deleteMin();
             if(curr.equals(start)){
-                System.out.println("Backward Path Found");
+                System.out.println("Backwards Path Found:\nTotal Cost: " + curr.getGCost());
                 return true;
             }
             curr.visit();
@@ -72,7 +74,8 @@ public class AStarUtil {
                     }else{
                         if(curr.getGCost() + 1 < c.getGCost()){
                             c.setPrev(curr);
-                            calcCosts(c, start);//may need to reorder heap after this...
+                            calcCosts(c, start);
+                            open.buildHeap();
                         }
                     }
                 }
