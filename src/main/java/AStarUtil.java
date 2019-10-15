@@ -83,9 +83,52 @@ public class AStarUtil {
         return false;
     }
 
-    public void adaptiveAStar(){
-
+    public boolean adaptiveAStar(){
+        CellHeap open = new CellHeap();
+        start.calcGCost();
+        if(start.getHCost() == 0) start.calcHCost(target);
+        start.calcFCost();
+        open.insert(start);
+        boolean pathFound = false;
+        while(open.notEmpty()){
+            Cells curr = open.deleteMin();
+            if(curr.equals(target)){
+                pathFound = true;
+                break;
+            }
+            curr.visit();
+            gridWorld.getNeighborsOf(curr.getI(), curr.getJ()).forEach(c -> {
+                if(c.getState() != Cells.States.BLOCKED && !c.isVisited()){
+                    if(open.isNotContained(c)){
+                        c.setPrev(curr);
+                        c.calcGCost();
+                        if(c.getHCost() == 0) c.calcHCost(target);
+                        c.calcFCost();
+                        open.insert(c);
+                    }else{
+                        if(curr.getGCost() + 1 < c.getGCost()){
+                            c.setPrev(curr);
+                            c.calcGCost();
+                            if(c.getHCost() == 0) c.calcHCost(target);
+                            c.calcFCost();
+                            open.buildHeap();
+                        }
+                    }
+                }
+            });
+        }
+        gridWorld.resetAllUnVisited();//so we can run adaptive a star multiple times
+        if(!pathFound){
+            return false;
+        }
+        int g = target.getGCost();
+        List<Cells> path = getTreePath(start, target);
+        path.forEach(c -> {
+            c.setH(g - c.getGCost());
+        });
+        return true;
     }
+
     public void setGridWorld(GridWorld g){
         this.gridWorld = g;
     }

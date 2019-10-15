@@ -67,7 +67,39 @@ public class MapLoader {
         return gson.fromJson(gridSon, GridWorld.class);
     }
 
+    public void displayGridWorld(String gridWorld, String path){
+        try{
+            FileWriter fw=new FileWriter("src/test/currentGrid.txt");
+            fw.write(gridWorld);
+            fw.close();
 
+            FileWriter fw2=new FileWriter("src/test/currentGridPath.txt");
+            fw2.write(path);
+            fw2.close();
+        }catch(Exception e){
+            System.out.println(e);
+        }
 
-
+        try {
+            String[] callAndArgs= {"python","/home/dubar/IdeaProjects/IntroToAIProj1/src/test/showGrid.py","src/test/currentGrid.txt","src/test/currentGridPath.txt"};
+            Process p = Runtime.getRuntime().exec(callAndArgs);
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            // read the output
+            String s = "";
+            while ((s = stdInput.readLine()) != null) {
+                System.out.println(s);
+            }
+            // read any errors
+            while ((s = stdError.readLine()) != null) {
+                System.out.println(s);
+            }
+            System.exit(0);
+        }
+        catch (IOException e) {
+                System.out.println("exception occured");
+                e.printStackTrace();
+                System.exit(-1);
+        }
+    }
 }

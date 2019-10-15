@@ -54,7 +54,7 @@ public class Cells implements Comparable {
     int getGCost() {
         return g;
     }
-    private int getHCost() {
+    int getHCost() {
         return h;
     }
     private int getFCost() {
@@ -84,6 +84,9 @@ public class Cells implements Comparable {
             g = 1;
         else
             g = prev.getGCost()+1;
+    }
+    public void setH(int i) {
+        this.h = i;
     }
     void calcHCost(Cells target){
         h =  Math.abs(this.getI() - target.getI()) + Math.abs(this.getJ() - target.getJ());

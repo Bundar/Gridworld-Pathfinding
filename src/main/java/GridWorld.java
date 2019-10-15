@@ -1,7 +1,4 @@
-import java.beans.Transient;
 import java.util.*;
-import static java.util.Arrays.deepEquals;
-
 public class GridWorld {
     private int dimensions;
     private ArrayList<ArrayList<Cells>> gridWorld;
@@ -117,6 +114,14 @@ public class GridWorld {
         GridWorld gridWorld1 = (GridWorld) o;
         return dimensions == gridWorld1.dimensions &&
                 gridWorld.equals(gridWorld1.gridWorld);
+    }
+
+    void resetAllUnVisited() {
+        gridWorld.forEach(cellArr -> {
+            cellArr.forEach(c -> {
+                c.setVisited(false);
+            });
+        });
     }
 }
 

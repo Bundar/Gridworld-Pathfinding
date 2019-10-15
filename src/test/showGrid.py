@@ -60,7 +60,7 @@ HEIGHT = WINDOW_SIZE[0]/rows
 screen = pygame.display.set_mode(WINDOW_SIZE)
  
 # Set title of screen
-pygame.display.set_caption('Grid World Visualizer: ', filename)
+pygame.display.set_caption('Grid World Visualizer: '+ filename)
  
 # Loop until the user clicks the close button.
 done = False
