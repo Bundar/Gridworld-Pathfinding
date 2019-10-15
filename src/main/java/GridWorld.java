@@ -2,7 +2,7 @@ import java.util.*;
 public class GridWorld {
     private int dimensions;
     private ArrayList<ArrayList<Cells>> gridWorld;
-    private transient Random random;
+    private Random random;
 
     GridWorld(int dim, Random random){
         dimensions = dim;
@@ -86,6 +86,10 @@ public class GridWorld {
         }
         else
             return new Cells(i, j, Cells.States.BLOCKED, random);
+    }
+
+    public int getDim() {
+        return dimensions;
     }
 
     void setCellOpen(int i, int j) {

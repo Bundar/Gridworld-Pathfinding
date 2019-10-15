@@ -8,7 +8,7 @@ public class Cells implements Comparable {
     private final int i;
     private boolean visited;
     private int g = -1, h = 0, f = 0;
-    private transient Random random;
+    private Random random;
 
     public enum States{
         UNKNOWN,
@@ -113,6 +113,33 @@ public class Cells implements Comparable {
         return Objects.hash(getState(), getPrev(), getJ(), getI(), isVisited(), g, h, f);
     }
 
+//    @Override
+//    public int compareTo(Object o) {
+//        Cells c;
+//        try {
+//            c = (Cells) o;
+//        }catch(Exception e){
+//            e.printStackTrace();
+//            return 0;
+//        }
+//        if(this.getFCost() == c.getFCost()){
+//            if(this.getHCost() == c.getHCost()){
+//                if(this.getGCost() == c.getGCost()){
+//                    int random_tie_break = random.nextInt(2);
+//                    if(random_tie_break == 0)
+//                        return -1;
+//                    else
+//                        return 1;
+//                }
+//                else
+//                    return this.getGCost() - c.getGCost();
+//            }
+//            else
+//                return this.getHCost() - c.getHCost();
+//        }
+//        else
+//            return this.getFCost() - c.getFCost();
+//    }
     @Override
     public int compareTo(Object o) {
         Cells c;
@@ -123,19 +150,15 @@ public class Cells implements Comparable {
             return 0;
         }
         if(this.getFCost() == c.getFCost()){
-            if(this.getHCost() == c.getHCost()){
-                if(this.getGCost() == c.getGCost()){
-                    int random_tie_break = random.nextInt(2);
-                    if(random_tie_break == 0)
-                        return -1;
-                    else
-                        return 1;
-                }
+            if(this.getGCost() == c.getGCost()){
+                int random_tie_break = random.nextInt(2);
+                if(random_tie_break == 0)
+                    return -1;
                 else
-                    return this.getGCost() - c.getGCost();
+                    return 1;
             }
             else
-                return this.getHCost() - c.getHCost();
+                return c.getGCost() - this.getGCost();
         }
         else
             return this.getFCost() - c.getFCost();

@@ -11,7 +11,7 @@ class AStarUtilTest {
     GridWorld gridWorld;
     AStarUtil aStarUtil;
 
-    private int dim = 10;
+    private int dim = 101;
 
     @BeforeEach
     void init() {
@@ -61,6 +61,72 @@ class AStarUtilTest {
             System.out.println("Adaptive Failed.");
     }
 
+    @Test
+    void shouldTimeFStar(){
+        GridWorld gridWorld = new GridWorld(101, new Random());
+        aStarUtil = new AStarUtil(gridWorld, gridWorld.getCell(0,0), gridWorld.getCell(100,100));
+//        System.out.println(gridWorld);
+        Instant start = Instant.now();
+        aStarUtil.repeatedForwardAStar();
+        Instant end = Instant.now();
+        System.out.println(Duration.between(start, end).toMillis() + " ms");
+    }
+
+    @Test
+    void shouldCompareFandB(){
+        int fstartime = 0;
+        int bstartime = 0;
+        GridWorld worstdiff = null;
+        int maxdiff = 0;
+        String fpath = "";
+        String bpath = "";
+        String worstFPath = null, worstBPath = null;
+        for(int i = 0; i < 50; i ++){
+            Instant start = Instant.now();
+            aStarUtil.repeatedForwardAStar();
+            Instant mid = Instant.now();
+            fpath = aStarUtil.storeableCellPath(gridWorld.getCell(0,0), gridWorld.getCell(dim -1, dim-1));
+            gridWorld.reset();
+            Instant mid2 = Instant.now();
+            aStarUtil.repeatedBackwardAStar();
+            Instant end = Instant.now();
+            bpath = aStarUtil.storeableCellPath(gridWorld.getCell(dim -1, dim-1), gridWorld.getCell(0,0));
+            init();
+            fstartime += Duration.between(start, mid).toMillis();
+            bstartime += Duration.between(mid2, end).toMillis();
+
+            if(Math.abs(fstartime - bstartime) > maxdiff){
+                maxdiff = Math.abs(fstartime - bstartime);
+                worstdiff = gridWorld;
+                worstBPath = bpath;
+                worstFPath = fpath;
+            }
+        }
+        try{
+            FileWriter fw=new FileWriter("src/test/worstDiffMap.txt");
+            fw.write(worstdiff.toString());
+            fw.close();
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        try{
+            FileWriter fw=new FileWriter("src/test/worstDiffFPath.txt");
+            fw.write(worstFPath);
+            fw.close();
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        try{
+            FileWriter fw=new FileWriter("src/test/worstDiffBPath.txt");
+            fw.write(worstBPath);
+            fw.close();
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        System.out.println("Forward: " + fstartime/50 + " ms");
+        System.out.println("Backward: " + bstartime/50 + " ms");
+
+    }
     @Test
     void shouldPrintOutThePathAsIfItWasAFfile(){
         System.out.println(gridWorld);

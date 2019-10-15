@@ -149,7 +149,7 @@ public class AStarUtil {
         List<Cells> cellPath = new ArrayList<>();
         Cells tmp = endCell;
         while(tmp != startCell){
-            if(tmp.getPrev().equals(tmp)){
+            if(tmp.getPrev() == null || tmp.getPrev().equals(tmp)){
                 break;
             }
             cellPath.add(tmp);
