@@ -6,7 +6,7 @@ All 50 101x101 GridWorlds are stored as serialized objects in the file 'fiftyGri
 
 Example:
 <p align="center">
-<img src="/home/dubar/Pictures/pics/aigame1.jpg">
+<img src="aigame1.jpg">
 
 Above the blue square is the starting state, the red square is the target state, and the green represents the shortest path.
 
@@ -15,7 +15,7 @@ a) Explain in your report why the first move of the agent for the example search
 
 
 <p align="center">
-<img src="/home/dubar/Pictures/pics/aigameexample2.png">
+<img src="aigameexample2.png">
 
 **Soln.** Given the agent does not already know the cells to the east are blocked it is natural fo rthe A* algortihm to make the first action to explore the cell to the east. This is seen when we look at the cost values associated with each neighbor cell. On the first iteration the cells E1, D2, and E3 are examined. The costs are as follows:
 E1: g = 1, h = 4, f = 5
@@ -53,7 +53,7 @@ Forward A* was much slower when compared to Adaptive A*. However, if we only ran
 In my implementation each cell stores the following values:
 
 <p align="center">
-<img src="/home/dubar/Pictures/pics/varsai3.png">
+<img src="varsai3.png">
 
 Obviously this is overkill, but for the small gridworlds i worked with this was the best way for me to implement the algorithms and learn from the implementation. If I was to port this imlementation to a game design I would need to reduce the data size of each cell. I could do this by not storing the Random object, and by storing the previous tree pointer as a two bit value specifying direction (eg. 00 as North, 01 as East and so forth). If I removed the Random object reference (8 bytes), and the prev pointer (8 bytes) I could significantly reduce the memory size. On a gridworld of 1001x1001 The total memory size would be:
 $$
